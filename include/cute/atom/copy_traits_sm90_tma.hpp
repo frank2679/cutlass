@@ -69,6 +69,7 @@ struct TMA_LOAD_Unpack
               Tensor<TD,DLayout>                & dst)
   {
     static_assert(is_smem<TD>::value, "SM90_TMA_LOAD requires the destination be shared memory.");
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 
     auto src_coord = src.data().coord_;
     void* dst_ptr = cute::raw_pointer_cast(dst.data());
@@ -211,6 +212,7 @@ struct Copy_Traits<SM90_TMA_LOAD::PREFETCH, NumBitsPerTMA, Args...>
               Tensor<TS,SLayout> const& src,
               Tensor<TD,DLayout>      & dst)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     auto src_coord = src.data().coord_;
     return detail::explode_tuple(detail::CallCOPY<SM90_TMA_LOAD::PREFETCH>{},
                                  traits.opargs_, tuple_seq<decltype(traits.opargs_)>{},
@@ -367,6 +369,7 @@ struct Copy_Traits<SM90_TMA_STORE, NumBitsPerTMA, AuxParams_>
               Tensor<TS,SLayout> const& src,
               Tensor<TD,DLayout>      & dst)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     static_assert(is_smem<TS>::value, "Expected smem src for SM90_TMA_STORE");
     //static_assert(is_gmem<TD>::value, "Expected gmem dst for SM90_TMA_STORE");  // TMA spoofed src tensor
 
@@ -408,6 +411,7 @@ struct Copy_Traits<SM90_TMA_STORE_PTR, NumBitsPerTMA>
               Tensor<TS,SLayout> const& src,
               Tensor<TD,DLayout>      & dst)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     static_assert(is_smem<TS>::value, "Expected smem src for SM90_TMA_STORE");
     //static_assert(is_gmem<TD>::value, "Expected gmem dst for SM90_TMA_STORE");  // TMA spoofed src tensor
 
@@ -480,6 +484,7 @@ struct Copy_Traits<SM90_TMA_REDUCE_ADD, NumBitsPerTMA, AuxParams_>
            int32_t(c0), int32_t(c1), int32_t(c2), int32_t(c3), int32_t(c4), src_ptr);
 #endif
 
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     SM90_TMA_REDUCE_ADD::copy(&tma_desc_,
                          src_ptr, get<Is>(dst_coord)...);
   }
@@ -495,6 +500,7 @@ struct Copy_Traits<SM90_TMA_REDUCE_ADD, NumBitsPerTMA, AuxParams_>
               Tensor<TS,SLayout> const& src,
               Tensor<TD,DLayout>      & dst)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     static_assert(is_smem<TS>::value, "Expected smem src for SM90_TMA_REDUCE_ADD");
     //static_assert(is_gmem<TD>::value, "Expected gmem dst for SM90_TMA_REDUCE_ADD");  // TMA spoofed src tensor
 
@@ -539,6 +545,7 @@ struct Copy_Traits<SM90_BULK_COPY_G2S, NumBitsPerTMA, OpArgs...>
               Tensor<TS,SLayout> const& src,
               Tensor<TD,DLayout>      & dst)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     static_assert(is_same<cute::tuple<OpArgs...>, cute::tuple<uint64_t*>>::value,
                   "Extra arguments not set. Set .with() before use.");
     static_assert(is_gmem<TS>::value, "Expected gmem src for SM90_BULK_COPY_G2S");
@@ -564,6 +571,7 @@ struct Copy_Traits<SM90_BULK_COPY_G2S::PREFETCH, NumBitsPerTMA, Args...>
               Tensor<TS,SLayout> const& src,
               Tensor<TD,DLayout>      & dst)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     static_assert(is_gmem<TS>::value, "Expected gmem src for SM90_BULK_PREFETCH");
     SM90_BULK_COPY_G2S::PREFETCH::copy(raw_pointer_cast(src.data()), int32_t(NumBitsPerTMA::value / 8));
   }
@@ -591,6 +599,7 @@ struct Copy_Traits<SM90_BULK_COPY_S2G, NumBitsPerTMA>
               Tensor<TS,SLayout> const& src,
               Tensor<TD,DLayout>      & dst)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     static_assert(is_smem<TS>::value, "Expected smem src for SM90_BULK_COPY_S2G");
     static_assert(is_gmem<TD>::value, "Expected gmem dst for SM90_BULK_COPY_S2G");
     SM90_BULK_COPY_S2G::copy(raw_pointer_cast(src.data()), raw_pointer_cast(dst.data()), int32_t(NumBitsPerTMA::value / 8));

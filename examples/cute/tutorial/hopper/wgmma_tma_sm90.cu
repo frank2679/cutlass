@@ -135,6 +135,20 @@ gemm_device(ProblemShape shape_MNK, CtaTiler cta_tiler,
   constexpr int tma_transaction_bytes = sizeof(make_tensor_like(tensor<0>(tAsA)))
                                       + sizeof(make_tensor_like(tensor<0>(tBsB)));
 
+  if (block0() && thread0()) {
+  print("mA: "); print(mA); print("\n");
+  print("mB: "); print(mB); print("\n");
+  print("gA: "); print(gA); print("\n");
+  print("gB: "); print(gB); print("\n");
+  print("gC: "); print(gC); print("\n");
+  print("sA: "); print(sA); print("\n");
+  print("sB: "); print(sB); print("\n");
+  print("tAgA: "); print(tAgA); print("\n");
+  print("tBgB: "); print(tBgB); print("\n");
+  print("tAsA: "); print(tAsA); print("\n");
+  print("tBsB: "); print(tBsB); print("\n");
+  }
+
   //
   // PREFETCH
   //
@@ -201,6 +215,15 @@ gemm_device(ProblemShape shape_MNK, CtaTiler cta_tiler,
   // Allocate "fragments"
   Tensor tCrA = thr_mma.make_fragment_A(tCsA);                         // (MMA,MMA_M,MMA_K,PIPE)
   Tensor tCrB = thr_mma.make_fragment_B(tCsB);                         // (MMA,MMA_N,MMA_K,PIPE)
+
+  if (block0() && thread0()) {
+  print("tCsA: "); print(tCsA); print("\n");
+  print("tCsB: "); print(tCsB); print("\n");
+  print("tCgC: "); print(tCgC); print("\n");
+  print("tCrC: "); print(tCrC); print("\n");
+  print("tCrA: "); print(tCrA); print("\n");
+  print("tCrB: "); print(tCrB); print("\n");
+  }
 
   //
   // PIPELINED MAIN LOOP
@@ -303,6 +326,15 @@ gemm_nt(int m, int n, int k,
   // Create TMA Atoms with the desired copy operation on the source and destination
   Copy_Atom tmaA = make_tma_atom(SM90_TMA_LOAD{}, mA, sA(_,_,0), make_shape(bM,bK));
   Copy_Atom tmaB = make_tma_atom(SM90_TMA_LOAD{}, mB, sB(_,_,0), make_shape(bN,bK));
+
+  print("problem_shape: "); print(prob_shape); print("\n");
+  print(tmaA);
+  print(tmaB);
+  print("mA: "); print(mA); print("\n");
+  print("mB: "); print(mB); print("\n");
+  print("sA: "); print(sA); print("\n");
+  print("sB: "); print(sB); print("\n");
+  print(tiled_mma);
 
   //
   // Setup and Launch
@@ -506,7 +538,7 @@ int main(int argc, char** argv)
 
   double gflops = (2.0*m*n*k) * 1e-9;
 
-  const int timing_iterations = 100;
+  const int timing_iterations = 1;
   GPU_Clock timer;
 
   int ldA = 0, ldB = 0, ldC = m;
@@ -539,18 +571,18 @@ int main(int argc, char** argv)
   thrust::host_vector<TC> cute_result = d_C;
 
   // Timing iterations
-  timer.start();
-  for (int i = 0; i < timing_iterations; ++i) {
-    gemm(transA, transB, m, n, k,
-         alpha,
-         d_A.data().get(), ldA,
-         d_B.data().get(), ldB,
-         beta,
-         d_C.data().get(), ldC);
-  }
-  double cute_time = timer.seconds() / timing_iterations;
-  CUTE_CHECK_LAST();
-  printf("CUTE_GEMM:     [%6.1f]GFlop/s  (%6.4f)ms\n", gflops / cute_time, cute_time*1000);
+  // timer.start();
+  // for (int i = 0; i < timing_iterations; ++i) {
+  //   gemm(transA, transB, m, n, k,
+  //        alpha,
+  //        d_A.data().get(), ldA,
+  //        d_B.data().get(), ldB,
+  //        beta,
+  //        d_C.data().get(), ldC);
+  // }
+  // double cute_time = timer.seconds() / timing_iterations;
+  // CUTE_CHECK_LAST();
+  // printf("CUTE_GEMM:     [%6.1f]GFlop/s  (%6.4f)ms\n", gflops / cute_time, cute_time*1000);
 
 #else
   std::cout << "CUTLASS_ARCH_MMA_SM90_SUPPORTED must be enabled, but it is not. Test is waived \n" << std::endl;

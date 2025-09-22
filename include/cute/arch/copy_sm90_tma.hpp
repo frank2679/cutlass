@@ -51,6 +51,7 @@ struct SM90_TMA_LOAD_1D
        void      * smem_ptr,
        int32_t const& crd0)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
     uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
     uint32_t smem_int_mbar = cast_smem_ptr_to_uint(mbar_ptr);
@@ -84,6 +85,7 @@ struct SM90_TMA_LOAD_1D
     copy(void const* desc_ptr,
          int32_t const& crd0)
     {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
   #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
       uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
       asm volatile (
@@ -107,6 +109,7 @@ struct SM90_TMA_LOAD_2D
        void      * smem_ptr,
        int32_t const& crd0, int32_t const& crd1)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
     uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
     uint32_t smem_int_mbar = cast_smem_ptr_to_uint(mbar_ptr);
@@ -140,6 +143,7 @@ struct SM90_TMA_LOAD_2D
     copy(void const* desc_ptr,
          int32_t const& crd0, int32_t const& crd1)
     {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
   #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
       uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
       asm volatile (
@@ -163,6 +167,7 @@ struct SM90_TMA_LOAD_3D
        void      * smem_ptr,
        int32_t const& crd0, int32_t const& crd1, int32_t const& crd2)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
     uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
     uint32_t smem_int_mbar = cast_smem_ptr_to_uint(mbar_ptr);
@@ -196,6 +201,7 @@ struct SM90_TMA_LOAD_3D
     copy(void const* desc_ptr,
          int32_t const& crd0, int32_t const& crd1, int32_t const& crd2)
     {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
   #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
       uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
       asm volatile (
@@ -219,6 +225,7 @@ struct SM90_TMA_LOAD_4D
        void      * smem_ptr,
        int32_t const& crd0, int32_t const& crd1, int32_t const& crd2, int32_t const& crd3)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
     uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
     uint32_t smem_int_mbar = cast_smem_ptr_to_uint(mbar_ptr);
@@ -252,6 +259,7 @@ struct SM90_TMA_LOAD_4D
     copy(void const* desc_ptr,
          int32_t const& crd0, int32_t const& crd1, int32_t const& crd2, int32_t const& crd3)
     {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
   #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
       uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
       asm volatile (
@@ -275,6 +283,7 @@ struct SM90_TMA_LOAD_5D
        void      * smem_ptr,
        int32_t const& crd0, int32_t const& crd1, int32_t const& crd2, int32_t const& crd3, int32_t const& crd4)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
     uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
     uint32_t smem_int_mbar = cast_smem_ptr_to_uint(mbar_ptr);
@@ -308,6 +317,7 @@ struct SM90_TMA_LOAD_5D
     copy(void const* desc_ptr,
          int32_t const& crd0, int32_t const& crd1, int32_t const& crd2, int32_t const& crd3, int32_t const& crd4)
     {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
   #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
       uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
       asm volatile (
@@ -331,6 +341,7 @@ struct SM90_TMA_LOAD
        void      * smem_ptr,
        int32_t const& crd0)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     return SM90_TMA_LOAD_1D::copy(desc_ptr, mbar_ptr, cache_hint, smem_ptr, crd0);
   }
   CUTE_HOST_DEVICE static void
@@ -338,6 +349,7 @@ struct SM90_TMA_LOAD
        void      * smem_ptr,
        int32_t const& crd0, int32_t const& crd1)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     return SM90_TMA_LOAD_2D::copy(desc_ptr, mbar_ptr, cache_hint, smem_ptr, crd0, crd1);
   }
   CUTE_HOST_DEVICE static void
@@ -961,6 +973,7 @@ struct SM90_TMA_STORE_1D
        void const* smem_ptr,
        int32_t const& crd0)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
     uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
     uint32_t smem_int_ptr  = cast_smem_ptr_to_uint(smem_ptr);
@@ -984,6 +997,7 @@ struct SM90_TMA_STORE_2D
        void const* smem_ptr,
        int32_t const& crd0, int32_t const& crd1)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
     uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
     uint32_t smem_int_ptr  = cast_smem_ptr_to_uint(smem_ptr);
@@ -1007,6 +1021,7 @@ struct SM90_TMA_STORE_3D
        void const* smem_ptr,
        int32_t const& crd0, int32_t const& crd1, int32_t const& crd2)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
     uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
     uint32_t smem_int_ptr  = cast_smem_ptr_to_uint(smem_ptr);
@@ -1030,6 +1045,7 @@ struct SM90_TMA_STORE_4D
        void const* smem_ptr,
        int32_t const& crd0, int32_t const& crd1, int32_t const& crd2, int32_t const& crd3)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
     uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
     uint32_t smem_int_ptr  = cast_smem_ptr_to_uint(smem_ptr);
@@ -1053,6 +1069,7 @@ struct SM90_TMA_STORE_5D
        void const* smem_ptr,
        int32_t const& crd0, int32_t const& crd1, int32_t const& crd2, int32_t const& crd3, int32_t const& crd4)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
     uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
     uint32_t smem_int_ptr  = cast_smem_ptr_to_uint(smem_ptr);
@@ -1076,6 +1093,7 @@ struct SM90_TMA_STORE
        void const* smem_ptr,
        int32_t const& crd0)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     return SM90_TMA_STORE_1D::copy(desc_ptr, smem_ptr, crd0);
   }
   CUTE_HOST_DEVICE static void
@@ -1083,6 +1101,7 @@ struct SM90_TMA_STORE
        void const* smem_ptr,
        int32_t const& crd0, int32_t const& crd1)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     return SM90_TMA_STORE_2D::copy(desc_ptr, smem_ptr, crd0, crd1);
   }
   CUTE_HOST_DEVICE static void
@@ -1090,6 +1109,7 @@ struct SM90_TMA_STORE
        void const* smem_ptr,
        int32_t const& crd0, int32_t const& crd1, int32_t const& crd2)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     return SM90_TMA_STORE_3D::copy(desc_ptr, smem_ptr, crd0, crd1, crd2);
   }
   CUTE_HOST_DEVICE static void
@@ -1285,6 +1305,7 @@ struct SM90_TMA_REDUCE_ADD_1D
        void const* const smem_ptr,
        int32_t const& crd0)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
     uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
     uint32_t smem_int_ptr  = cast_smem_ptr_to_uint(smem_ptr);
@@ -1308,6 +1329,7 @@ struct SM90_TMA_REDUCE_ADD_2D
        void const* const smem_ptr,
        int32_t const& crd0, int32_t const& crd1)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
     uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
     uint32_t smem_int_ptr  = cast_smem_ptr_to_uint(smem_ptr);
@@ -1331,6 +1353,7 @@ struct SM90_TMA_REDUCE_ADD_3D
        void const* const smem_ptr,
        int32_t const& crd0, int32_t const& crd1, int32_t const& crd2)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
     uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
     uint32_t smem_int_ptr  = cast_smem_ptr_to_uint(smem_ptr);
@@ -1354,6 +1377,7 @@ struct SM90_TMA_REDUCE_ADD_4D
        void const* const smem_ptr,
        int32_t const& crd0, int32_t const& crd1, int32_t const& crd2, int32_t const& crd3)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
     uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
     uint32_t smem_int_ptr  = cast_smem_ptr_to_uint(smem_ptr);
@@ -1377,6 +1401,7 @@ struct SM90_TMA_REDUCE_ADD_5D
        void const* const smem_ptr,
        int32_t const& crd0, int32_t const& crd1, int32_t const& crd2, int32_t const& crd3, int32_t const& crd4)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
     uint64_t gmem_int_desc = reinterpret_cast<uint64_t>(desc_ptr);
     uint32_t smem_int_ptr  = cast_smem_ptr_to_uint(smem_ptr);
@@ -1442,6 +1467,7 @@ struct SM90_BULK_COPY_G2S
   copy(void const* gmem_ptr, uint64_t* mbar_ptr,
        void      * smem_ptr, int32_t load_bytes)
   {
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 #if defined(CUTE_ARCH_TMA_SM90_ENABLED)
     uint32_t smem_int_mbar = cast_smem_ptr_to_uint(mbar_ptr);
     uint32_t smem_int_ptr  = cast_smem_ptr_to_uint(smem_ptr);

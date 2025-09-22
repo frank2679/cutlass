@@ -100,14 +100,14 @@ struct Copy_Atom<Copy_Traits<Args...>, CopyInternalType>
     if constexpr (is_constant<NumValSrc, decltype(size(src))>::value ||
                   is_constant<NumValDst, decltype(size(dst))>::value) {
       // Dispatch to unpack to execute instruction
-  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
       return copy_unpack(static_cast<Traits const&>(*this), src, dst);
     } else if constexpr (is_tuple<decltype(shape(src))>::value &&
                          is_tuple<decltype(shape(dst))>::value) {
       // If the size of the src/dst doesn't match the instruction,
       //   recurse this rank-1 layout by peeling off the mode
       //   ((A,B,C,...)) -> (A,B,C,...)
-  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
       return copy(*this, tensor<0>(src), tensor<0>(dst));
     } else {
       static_assert(dependent_false<SEngine>,
@@ -146,10 +146,10 @@ struct Copy_Atom<Copy_Traits<Args...>, CopyInternalType>
       Traits const& traits = static_cast<Traits const&>(*this);
       auto has_with_bool = cute::is_valid([](auto t)->void_t<decltype(t.with(true))>{}, traits);
       if constexpr (has_with_bool) {
-  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
         copy_unpack(traits.with(prd(Int<0>{})), src, dst);
       } else {
-  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
         if (prd(Int<0>{})) { copy_unpack(traits, src, dst); }
       }
     } else if constexpr (is_tuple<decltype(shape(prd))>::value &&

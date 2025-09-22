@@ -129,7 +129,7 @@ copy_unpack(AnyCPYTraits            const&,
     "Copy_Traits: src failed to vectorize into registers. Layout is incompatible with this CopyOp.");
   CUTE_STATIC_ASSERT_V(size(rD) == Int<RegNumDst>{},
     "Copy_Traits: dst failed to vectorize into registers. Layout is incompatible with this CopyOp.");
-  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
+  if (block0() && thread0()) printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 
   detail::explode(detail::CallCOPY<CopyOp>{},
                   rS, make_int_sequence<RegNumSrc>{},
