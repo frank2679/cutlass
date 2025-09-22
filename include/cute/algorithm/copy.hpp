@@ -52,6 +52,7 @@ copy_if(PrdTensor                    const& pred,
 {
   using SrcType = typename SrcEngine::value_type;
   using DstType = typename DstEngine::value_type;
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 
   CUTE_UNROLL
   for (int i = 0; i < size(dst); ++i) {
@@ -77,20 +78,24 @@ copy_if(Copy_Atom<CopyArgs...>       const& copy_atom,
         Tensor<SrcEngine, SrcLayout> const& src,       // ( V, Rest...)
         Tensor<DstEngine, DstLayout>      & dst)       // ( V, Rest...)
 {
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
   if constexpr (PrdLayout::rank == SrcLayout::rank - 1) {
     // Back-compat ONLY -- Delete?
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     copy_if(copy_atom, make_tensor(prd.data(), prepend(prd.layout(), Layout<_1,_0>{})), src, dst);
   } else {
     static_assert(SrcLayout::rank == DstLayout::rank, "CopyAtom rank-mismatch.");
     static_assert(SrcLayout::rank == PrdLayout::rank, "CopyAtom rank-mismatch.");
 
     if constexpr (SrcLayout::rank == 1) {   // Dispatch the copy
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
       copy_atom.call(prd, src, dst);
     } else {                                // Loop over all but the first mode
       constexpr int R = SrcLayout::rank;
       Tensor prd_v = group_modes<1,R>(prd);
       Tensor src_v = group_modes<1,R>(src);
       Tensor dst_v = group_modes<1,R>(dst);
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
       CUTE_UNROLL
       for (int i = 0; i < size<1>(dst_v); ++i) {
         copy_atom.call(prd_v(_,i), src_v(_,i), dst_v(_,i));
@@ -112,6 +117,7 @@ copy_if(Copy_Atom<CopyArgs...>       const& copy_atom,
         Tensor<DstEngine, DstLayout>      & dst)       // (V,Rest...)
 {
   Tensor tpred = cute::lazy::transform(make_tensor(counting_iterator<int>{}, replace<0>(shape(dst), _1{})), pred);
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
   return copy_if(copy_atom, tpred, src, dst);
 }
 
@@ -147,9 +153,11 @@ copy_if(AutoCopyAsync                const& cpy,
     } else {
         return UniversalCopy<SrcType,DstType>{};
     }
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
 
     CUTE_GCC_UNREACHABLE;
 #else
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     return UniversalCopy<SrcType,DstType>{};
 #endif
   }();
@@ -174,6 +182,7 @@ copy(AutoCopyAsync                const& cpy,
      Tensor<SrcEngine, SrcLayout> const& src,       // (V,Rest...)
      Tensor<DstEngine, DstLayout>      & dst)       // (V,Rest...)
 {
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
   copy_if(cpy, constant_fn<true_type>{}, src, dst);
 }
 
@@ -190,9 +199,11 @@ copy(Copy_Atom<CopyArgs...>       const& copy_atom,
      Tensor<SrcEngine, SrcLayout> const& src,       // (V,Rest...)
      Tensor<DstEngine, DstLayout>      & dst)       // (V,Rest...)
 {
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
   static_assert(SrcLayout::rank == DstLayout::rank, "CopyAtom rank-mismatch.");
 
   if constexpr (SrcLayout::rank == 1) {   // Dispatch the copy
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     copy_atom.call(src, dst);
   } else {                                // Loop over all but the first mode
     constexpr int R = SrcLayout::rank;
@@ -200,6 +211,7 @@ copy(Copy_Atom<CopyArgs...>       const& copy_atom,
     Tensor dst_v = group_modes<1,R>(dst);
 
     if constexpr (is_static<decltype(shape(src_v))>::value && is_static<decltype(shape(dst_v))>::value) {
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
       CUTE_STATIC_ASSERT_V(size<1>(src_v) == size<1>(dst_v));
 
       // AutoFilter on the Rest-mode
@@ -226,6 +238,7 @@ copy(Copy_Atom<CopyArgs...>       const& copy_atom,
         copy_atom.call(src_c(_,i), dst_c(_,i));
       }
     } else {
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
       CUTE_UNROLL
       for (int i = 0; i < size<1>(dst_v); ++i) {
         copy_atom.call(src_v(_,i), dst_v(_,i));
@@ -267,11 +280,14 @@ copy(AutoVectorizingCopyWithAssumedAlignment<MaxVecBits> const&,
       // Recast
       Tensor src_v = recast<SrcVecType>(src);
       Tensor dst_v = recast<DstVecType>(dst);
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
       return copy_if(constant_fn<true_type>{}, src_v, dst_v);
     } else {
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
       return copy_if(constant_fn<true_type>{}, src, dst);
     }
   } else {
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     return copy_if(constant_fn<true_type>{}, src, dst);
   }
 }
@@ -293,6 +309,7 @@ copy(AutoFilter<CopyOp>           const& copy_op,
      Tensor<DstEngine, DstLayout>      & dst)
 {
   if constexpr (is_constant<true, decltype(size(src) == size(dst))>::value) {
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     auto dst_null = nullspace(dst.layout());
 
     Tensor dst_n = zipped_divide(dst, dst_null);
@@ -303,6 +320,7 @@ copy(AutoFilter<CopyOp>           const& copy_op,
 
     copy(copy_op.base, src_n(Int<0>{},_), dst_n(Int<0>{},_));
   } else {
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     copy(copy_op.base, src, dst);
   }
 }
@@ -317,13 +335,16 @@ copy(Tensor<SrcEngine, SrcLayout> const& src,
 {
   if constexpr (is_static<SrcLayout>::value && is_static<DstLayout>::value) {
     // Assume Tensors with static layouts (e.g. registers) have pointers that are 128b aligned
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     return copy(AutoFilter(AutoVectorizingCopyWithAssumedAlignment<128>{}), src, dst);
   } else
   if constexpr (is_static<decltype(shape(src))>::value && is_static<decltype(shape(dst))>::value) {
     // Tensors with static shapes can be filtered, but do not assume that dynamic layouts are aligned.
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     return copy(AutoFilter(AutoVectorizingCopyWithAssumedAlignment<8>{}), src, dst);
   } else {
     // Do not assume that dynamic layouts are aligned.
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     return copy(AutoVectorizingCopyWithAssumedAlignment<8>{}, src, dst);
   }
 }
@@ -338,8 +359,10 @@ copy_aligned(Tensor<SrcEngine, SrcLayout> const& src,
 {
   if constexpr (is_static<decltype(shape(src))>::value && is_static<decltype(shape(dst))>::value) {
     // Tensors with static shapes can be filtered
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     return copy(AutoFilter(AutoVectorizingCopyWithAssumedAlignment<128>{}), src, dst);
   } else {
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     return copy(AutoVectorizingCopyWithAssumedAlignment<128>{}, src, dst);
   }
 }
@@ -412,6 +435,7 @@ copy(Copy_Atom<Copy_Traits<SM90_BULK_COPY_AUTO, CT_Args...>, CA_Args...> const& 
      Tensor<SrcEngine, SrcLayout>                                        const& src,
      Tensor<DstEngine, DstLayout>                                             & dst)
 {
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
   return copy(static_cast<Copy_Traits<SM90_BULK_COPY_AUTO, CT_Args...> const&>(atom), src, dst);
 }
 #endif // #if defined(CUTE_COPY_ATOM_TMA_SM90_ENABLED)
@@ -443,6 +467,7 @@ copy(TiledCopy<CopyAtom, TV, Tiler> const& tiled_copy,
      Tensor<SrcEngine, SrcLayout>   const& src,
      Tensor<DstEngine, DstLayout>        & dst)
 {
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
   return copy(static_cast<CopyAtom const&>(tiled_copy), src, dst);
 }
 
@@ -523,6 +548,7 @@ copy_if(CopyPolicy                   const& copy_policy,
         Tensor<SrcEngine, SrcLayout> const& src,
         Tensor<DstEngine, DstLayout>     && dst)
 {
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
   return copy_if(copy_policy, pred, src, dst);
 }
 
@@ -533,6 +559,7 @@ void
 copy(Tensor<SrcEngine, SrcLayout> const& src,
      Tensor<DstEngine, DstLayout>     && dst)
 {
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
   return copy(src, dst);
 }
 
@@ -545,6 +572,7 @@ copy(CopyPolicy                   const& copy_policy,
      Tensor<SrcEngine, SrcLayout> const& src,
      Tensor<DstEngine, DstLayout>     && dst)
 {
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
   return copy(copy_policy, src, dst);
 }
 
@@ -555,6 +583,7 @@ void
 copy_aligned(Tensor<SrcEngine, SrcLayout> const& src,
              Tensor<DstEngine, DstLayout>     && dst)
 {
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
   return copy_aligned(src, dst);
 }
 

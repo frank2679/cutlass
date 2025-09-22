@@ -56,6 +56,7 @@ struct UniversalCopy
   copy(S const& src,
        D      & dst)
   {
+  printf("%s, %s: %d\n", __FILE__, __FUNCTION__, __LINE__);
     dst = src;
   }
 };
